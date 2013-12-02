@@ -23,3 +23,8 @@ module.exports = {
 ```
 
 On the rPi, run `node sound.js` to start the websocket client
+
+Additional Information
+----------------------
+SoX can be sent command line arguments to modify the song playing.
+You can see the parameters to SoX at [this](http://sox.sourceforge.net/sox.html) link.
