@@ -1,0 +1,16 @@
+{
+  "name": "sounds",
+  "version": "0.0.0",
+  "description": "A socket.io server that takes in requests for sounds and parameters and plays them using SoX. SoX needs to be installed",
+  "main": "sound.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Marc Farra",
+  "license": "BSD",
+  "dependencies": {
+    "socket.io": "~0.9.16",
+    "socket.io-client": "~0.9.16"
+  }
+}
