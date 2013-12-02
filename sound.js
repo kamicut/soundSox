@@ -1,7 +1,8 @@
 var exec = require('child_process').exec,
+	url = require('./config.js').url,
     child;
 
-var socket = require('socket.io-client').connect('http://192.168.1.85:3000');
+var socket = require('socket.io-client').connect(url);
 socket.on('connect', function(){
 	socket.on('message', function(data){
 		playSong(data, function() {
