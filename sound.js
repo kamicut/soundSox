@@ -1,6 +1,7 @@
 var exec 	= require('child_process').exec,
 	url 	= require('./config.js').url,
-	socket 	= require('socket.io-client').connect(url);
+	port 	= require('./config.js').port,
+	socket 	= require('socket.io-client').connect(url, {port: port});
 
 //What to do when you connect to main server
 socket.on('connect', function(){
