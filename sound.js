@@ -5,30 +5,48 @@ var exec 	= require('child_process').exec,
 
 //What to do when you connect to main server
 socket.on('connect', function(){
-	socket.on('message', function(data){
-		playSong(data.name, data.params, function() {
-			console.log(data)
-			//Here, send message back to server
+	
+	//What to do with next song
+	socket.on('nextsong', function(data){
+		playSong(data, function() {
+			//in callback get a newsong
+			socket.emit("newsong", "Give me a new song")
 		})
 	});
-	//Dummy send
-	socket.emit("message", "Hello world!");
 
-	//Cleanup code? 
+	//On initialization
+	socket.emit("newsong", "Give me a new song");
+	socket.on("timeout", function() {
+		socket.emit("newsong", "Give me a new song")
+	}, 2000)
+
+	//Cleanup code
 	socket.on('disconnect', function(){});
 });
 
 //Play song using SoX, optionally giving parameters
 //ParamString given according to reference http://sox.sourceforge.net/sox.html
-function playSong(songName, paramString, callback) {
-	if (typeof(paramString) == undefined) paramString = ""
-	child = exec('play '+songName + " " + paramString,
-	  function (error, stdout, stderr) {
-	    console.log('stdout: ' + stdout);
-	    console.log('stderr: ' + stderr);
-	    if (error !== null) {
-	      console.log('exec error: ' + error);
-	    }
-	    if (typeof(callback) != undefined) callback()
-	});
+function playSong(message, nextSongCallback) {
+	var _songName = message.name
+	var _paramString = message.params 
+	var _withNoise = message.withNoise
+
+	if (_withNoise) {
+		exec('sox ' + _songName + " noise.wav synth noise", function() {
+			makeSong(function() {
+				exec("play -m noise.wav song.wav", nextSongCallback)
+			})
+		})
+	} else {
+		makeSong(function() {
+			exec("play song.wav", nextSongCallback)
+		})
+	}
+
+	function makeSong(callback) {
+		exec("sox " + _songName + " song.wav " + _paramString, function() {
+			callback()
+		})
+	}
 }
+

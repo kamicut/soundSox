@@ -10,7 +10,7 @@ io.sockets.on('connection', function(socket) {
 		if (typeof(model) == undefined) {
 			socket.emit("timeout", "Model hasn't been created yet.")
 		} else {
-		 	socket.emit{"nextsong", model.getNextSong());	
+		 	socket.emit("nextsong", model.getNextSong());	
 		}
 	});	
 
