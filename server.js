@@ -24,6 +24,8 @@ function Model() {
 	this._model = {} //Internal
 	this._currentSongPlaying = {}
 	this._globalProbabilities = [] //I don't know maybe we need this
+	this.songList = ["assets/button2.mp3", "assets/button4.mp3"]
+	this.state = 0
 
 	/* Specification of message
 	 * 
@@ -33,8 +35,8 @@ function Model() {
  	 */
 	this.getNextSong = function() {
 		//Return the best next song according to the model
-
-		var message = {name:'assets/button2.mp3', params: "reverse", withNoise: true}
+		this.state = (this.state + 1) % this.songList.length
+		var message = {name: this.songList[this.state], params: "reverse", withNoise: true}
 		this._currentSongPlaying = message
 		return message
 	}
