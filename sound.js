@@ -28,23 +28,21 @@ socket.on('connect', function(){
 //ParamString given according to reference http://sox.sourceforge.net/sox.html
 function playSong(message, nextSongCallback) {
 	var _songName = message.name
-	var _paramString = message.params 
-	var _withNoise = message.withNoise
-
-	if (_withNoise) {
-		exec('sox ' + _songName + " noise.wav synth noise", function() {
-			makeSong(function() {
-				exec("play -m noise.wav song.wav", nextSongCallback)
-			})
-		})
-	} else {
-		makeSong(function() {
-			exec("play song.wav", nextSongCallback)
-		})
+	var _vol = message.vol 
+	var _noise = message.noise
+	var _params = ""
+	if (typeof(message.params) != undefined) {
+		_params = message.params
 	}
 
+	exec('sox ' + _songName + " noise.wav synth noise vol " + _noise, function() {
+		makeSong(function() {
+			exec("play -m noise.wav song.wav", nextSongCallback)
+		})
+	})
+
 	function makeSong(callback) {
-		exec("sox " + _songName + " song.wav " + _paramString, function() {
+		exec("sox " + _songName + " song.wav vol " + _vol +" " + _params, function() {
 			callback()
 		})
 	}

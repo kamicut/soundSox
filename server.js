@@ -21,23 +21,28 @@ io.sockets.on('connection', function(socket) {
 
 //Modelling the expressions and the songs
 function Model() {
-	this._model = {} //Internal
-	this._currentSongPlaying = {}
-	this._globalProbabilities = [] //I don't know maybe we need this
-	this._songList = ["assets/button2.mp3", "assets/button4.mp3"]
-	this._state = 0 //Pointer to track list
+	this._currentMood = {s: 0, h: 0, count: 0}
+	this._currentSongPlaying = 0
+	this._songList = [
+		new Song("assets/button2.mp3"), 
+		new Song("assets/button4.mp3")
+	]
+
+	this._alpha = 1;
+	this._beta = 1;
 
 	/* Specification of message
 	 * 
-	 * A message is of the form {name: '_.mp3', params: '_', withNoise: true/false}
+	 * A message is of the form {name: '_.mp3', params: '_', noise: [num], vol: [num]}
 	 * This will create a song, apply the params such as gain, fade, echo, etc. 
-	 * and then optionally add noise.
+	 * and then set the noise level and track level
  	 */
 	this.getNextSong = function() {
 		//Return the best next song according to the model
-		this._state = (this._state + 1) % this._songList.length
-		var message = {name: this.songList[this.state], params: "reverse", withNoise: true}
-		this._currentSongPlaying = message
+		this._currentSongPlaying = (this._currentSongPlaying + 1) % this._songList.length
+		var name = this._songList[this._currentSongPlaying].name
+		console.log(name)
+		var message = {name: name, params: "reverse", noise: this._currentSongPlaying, vol: 1}
 		return message
 	}
 
@@ -45,9 +50,35 @@ function Model() {
 	 *
 	 * To fill
 	 */
-	this._improveModel = function(vector) {
+	this.improveModel = function(vector) {
 		//Algorithm to inject vector into the model
+		console.log(vector)
+		this._updateCurrentMood(vector)
+		this._updateCurrentSong(vector)
 	}
 
+	/* Update the current mood
+	 *
+	 */
+	this._updateCurrentMood = function(vector) {
+
+	}
+
+	this._updateCurrentSong = function(vector) {
+
+	}
 }
+
+function Song(name) {
+	this.name = name
+	this.s = 0
+	this.h = 0
+
+	this.l2 = function(other) {
+		return Math.sqrt(Math.pow((this.s-other.s),2) + 
+			Math.pow((this.h-other.h),2))
+	}
+}
+
+
 
