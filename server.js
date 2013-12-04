@@ -1,6 +1,34 @@
+/* Global Object for Model
+ *
+ */
+var model = new Model();
+
+/* Start JPG receiver
+ * 
+ */
+var exec 	= require('child_process').exec
+var fs 		= require("fs");
+var request = require("request");
+var MjpegConsumer = require("mjpeg-consumer");
+var consumer = new MjpegConsumer();
+
+/* 
+request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', function(data) {
+	fs.writeFileSync('./data/cropped.png', data, 'binary')
+	exec('./ofApp.app/Contents/MacOS/ofApp cropped.png', function(error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    if (error !== null) {
+ //     console.log('exec error: ' + error);
+    }	})
+})
+*/
+
+
+/* Start Audio Connection
+ *
+ */
 var io = require('socket.io').listen(3000);
 
-var model = new Model();
 io.sockets.on('connection', function(socket) {
 
 	socket.emit('message', "We got your connection!");
@@ -19,13 +47,15 @@ io.sockets.on('connection', function(socket) {
 	});
 });
 
-//Modelling the expressions and the songs
+/* Modelling the expressions and the songs
+ *
+ */
 function Model() {
-	this._currentMood = {s: 0, h: 0, count: 0}
-	this._currentSongPlaying = 0
+	this._currentMood = {s: 0.5, h: 0.5, count: 0}
+	this._currentSongPlaying = -1
 	this._songList = [
-		new Song("assets/button2.mp3"), 
-		new Song("assets/button4.mp3")
+		new Song("assets/button2.mp3", 0.5, 0.5), 
+		new Song("assets/button4.mp3", 1, 0.5)
 	]
 
 	this._alpha = 1;
@@ -38,11 +68,24 @@ function Model() {
 	 * and then set the noise level and track level
  	 */
 	this.getNextSong = function() {
-		//Return the best next song according to the model
-		this._currentSongPlaying = (this._currentSongPlaying + 1) % this._songList.length
-		var name = this._songList[this._currentSongPlaying].name
-		console.log(name)
-		var message = {name: name, params: "reverse", noise: this._currentSongPlaying, vol: 1}
+		var current = this._currentSongPlaying;
+		var min_val = 99999 //Infinity
+		var idx = -1
+		for (var i=0; i<this._songList.length; i++) {
+			if (i != current) { //All songs except current
+				var temp = this._songList[i].l2(this._currentMood)
+				console.log(temp)
+				if (temp < min_val) {
+					idx = i
+					min_val = temp
+				}
+			}
+		}
+		var nextSong = this._songList[idx]
+		var name = nextSong.name
+		var vol = this._alpha * Math.max(nextSong.s, nextSong.h);
+		var noise = this._beta * Math.abs(nextSong.s - nextSong.h); //I don't think this is accurate
+		var message = {name: name, params: "reverse", noise: vol, vol: noise}
 		return message
 	}
 
@@ -69,10 +112,10 @@ function Model() {
 	}
 }
 
-function Song(name) {
+function Song(name, s, h) {
 	this.name = name
-	this.s = 0
-	this.h = 0
+	this.s = s
+	this.h = h
 
 	this.l2 = function(other) {
 		return Math.sqrt(Math.pow((this.s-other.s),2) + 

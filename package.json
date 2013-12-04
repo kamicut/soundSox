@@ -11,6 +11,7 @@
   "license": "BSD",
   "dependencies": {
     "socket.io": "~0.9.16",
-    "socket.io-client": "~0.9.16"
+    "socket.io-client": "~0.9.16",
+    "mjpeg-consumer": "~0.2.0"
   }
 }
