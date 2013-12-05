@@ -12,16 +12,36 @@ var request = require("request");
 var MjpegConsumer = require("mjpeg-consumer");
 var consumer = new MjpegConsumer();
 
-/* 
+var queue = [] 
+var max = 40
+var count = 0
+
+function update(data) {
+	console.log(data)
+}
+ 
 request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', function(data) {
-	fs.writeFileSync('./data/cropped.png', data, 'binary')
-	exec('./ofApp.app/Contents/MacOS/ofApp cropped.png', function(error, stdout, stderr) {
-    console.log('stdout: ' + stdout);
-    if (error !== null) {
- //     console.log('exec error: ' + error);
-    }	})
+	// if (count < MAX) { 
+	// 	count+= 1;
+	// 	doWork(data)
+	// } else {
+	// 	queue.push(data)
+	// }
+
+	fs.writeFile('./data/cropped.png', data, function() {
+		exec('./ofApp.app/Contents/MacOS/ofApp cropped.png', function(error, stdout, stderr) {
+			try {
+				var data = JSON.parse(stdout)
+				update(data)
+			} catch (err) {}
+
+		    if (error !== null) {
+		  //    console.log('exec error: ' + error);
+		    }	
+		})		
+	})
 })
-*/
+
 
 
 /* Start Audio Connection
@@ -40,11 +60,12 @@ io.sockets.on('connection', function(socket) {
 		} else {
 		 	socket.emit("nextsong", model.getNextSong());	
 		}
-	});	
+	});
 
 	socket.on('disconnect', function() {
 		console.log("Client disconnected");
 	});
+
 });
 
 /* Modelling the expressions and the songs
