@@ -11,6 +11,8 @@ var fs 		= require("fs");
 var request = require("request");
 var MjpegConsumer = require("mjpeg-consumer");
 var consumer = new MjpegConsumer();
+var io = require('socket.io').listen(3000);
+
 
 function update(data) {
 	model.improveModel(data)
@@ -27,8 +29,8 @@ request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', func
 	fs.writeFile('./data/cropped.png', data, function() {
 		exec('./ofApp.app/Contents/MacOS/ofApp cropped.png', function(error, stdout, stderr) {
 			try {
-				var data = JSON.parse(stdout)
-				update(data)
+				var vals = JSON.parse(stdout)
+				update(vals)
 			} catch (err) {}
 
 		    if (error !== null) {
@@ -43,8 +45,6 @@ request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', func
 /* Start Audio Connection
  *
  */
-var io = require('socket.io').listen(3000);
-
 io.sockets.on('connection', function(socket) {
 
 	socket.emit('message', "We got your connection!");
@@ -96,8 +96,8 @@ function Model() {
 		new Song("assets/zelda.mp3", 0, 0.5)
 	]
 
-	this._alpha = 1;
-	this._beta = 0.1;
+	this._alpha = 1.5;
+	this._beta = 0.03;
 
 	/* Specification of message
 	 * 
@@ -125,6 +125,7 @@ function Model() {
 		var noise = this._beta * Math.abs(nextSong.s - nextSong.h); //I don't think this is accurate
 		var message = {name: name, params: "", noise: noise, vol: vol}
 		this._currentSongPlaying = idx;
+		console.log("Current Mood is: " + this._currentMood.s + ", " + this._currentMood.h)
 		return message
 	}
 
@@ -146,10 +147,10 @@ function Model() {
 	 *
 	 */
 	this._updateCurrentMood = function(s,h,n) {
-		if (n < 0.6) {
+		if (n < 0.65) {
 			//Update mood only if outlier
 			this._currentMood.s = (this._currentMood.s + s)/2
-			this._currentMood.h = (this._currentMood.h + h)/2
+			this._currentMood.h = (this._currentMood.h + h*2)/2
 		}
 	}
 
