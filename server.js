@@ -68,7 +68,7 @@ io.sockets.on('connection', function(socket) {
  *
  */
 function Model() {
-	this._currentMood = {s: 0.5, h: 0.5, count: 0}
+	this._currentMood = {s: 0.0, h: 0.5, count: 0}
 	this._currentSongPlaying = -1
 	this._songList = [
 		new Song("assets/art_attack.mp3", 0, 0.5),
@@ -125,8 +125,6 @@ function Model() {
 		var noise = this._beta * Math.abs(nextSong.s - nextSong.h); //I don't think this is accurate
 		var message = {name: name, params: "reverse", noise: vol, vol: noise}
 		this._currentSongPlaying = idx;
-		this._currentMood.s = 0;
-		this._currentMood.h = 0;
 		return message
 	}
 
