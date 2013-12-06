@@ -97,7 +97,7 @@ function Model() {
 	]
 
 	this._alpha = 1;
-	this._beta = 1;
+	this._beta = 0.1;
 
 	/* Specification of message
 	 * 
@@ -123,7 +123,7 @@ function Model() {
 		var name = nextSong.name
 		var vol = this._alpha * Math.max(nextSong.s, nextSong.h);
 		var noise = this._beta * Math.abs(nextSong.s - nextSong.h); //I don't think this is accurate
-		var message = {name: name, params: "reverse", noise: vol, vol: noise}
+		var message = {name: name, params: "", noise: noise, vol: vol}
 		this._currentSongPlaying = idx;
 		return message
 	}
