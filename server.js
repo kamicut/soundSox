@@ -71,28 +71,28 @@ function Model() {
 	this._currentMood = {s: 0.5, h: 0.5, count: 0}
 	this._currentSongPlaying = -1
 	this._songList = [
-		new Song("assets/art_attack.mp3", 0, 0.5)
-		new Song("assets/bhutto.mp3", 0.5, 0)
-		new Song("assets/bill.mp3", 0.5, 0.5)
-		new Song("assets/bush.mp3", 0.5, 0)
-		new Song("assets/can.mp3", 0.5, 0.5)
-		new Song("assets/crunch.mp3", 0.5, 0)
-		new Song("assets/dialup.mp3", 0, 0.5)
-		new Song("assets/facebook.mp3", 0.5, 0.5)
-		new Song("assets/friends.mp3", 0, 0.5)
-		new Song("assets/global_warming.mp3", 0.5, 0)
-		new Song("assets/h1n1.mp3", 0.5, 0)
-		new Song("assets/higgs.mp3", 0, 0.5)
-		new Song("assets/ipod.mp3", 0, 0.5)
-		new Song("assets/mario.mp3", 0, 0.5)
-		new Song("assets/michael.mp3", 0, 0.5)
-		new Song("assets/pinky.mp3", 0, 0.5)
-		new Song("assets/pope.mp3", 0.5, 0)
-		new Song("assets/rickroll.mp3", 0.5, 0.5)
-		new Song("assets/tsunami.mp3", 0.5, 0)
-		new Song("assets/wikileaks.mp3", 0.5, 0.5)
-		new Song("assets/wikipedia.mp3", 0.5, 0.5)
-		new Song("assets/wizard.mp3", 0, 0.5)
+		new Song("assets/art_attack.mp3", 0, 0.5),
+		new Song("assets/bhutto.mp3", 0.5, 0),
+		new Song("assets/bill.mp3", 0.5, 0.5),
+		new Song("assets/bush.mp3", 0.5, 0),
+		new Song("assets/can.mp3", 0.5, 0.5),
+		new Song("assets/crunch.mp3", 0.5, 0),
+		new Song("assets/dialup.mp3", 0, 0.5),
+		new Song("assets/facebook.mp3", 0.5, 0.5),
+		new Song("assets/friends.mp3", 0, 0.5),
+		new Song("assets/global_warming.mp3", 0.5, 0),
+		new Song("assets/h1n1.mp3", 0.5, 0),
+		new Song("assets/higgs.mp3", 0, 0.5),
+		new Song("assets/ipod.mp3", 0, 0.5),
+		new Song("assets/mario.mp3", 0, 0.5),
+		new Song("assets/michael.mp3", 0, 0.5),
+		new Song("assets/pinky.mp3", 0, 0.5),
+		new Song("assets/pope.mp3", 0.5, 0),
+		new Song("assets/rickroll.mp3", 0.5, 0.5),
+		new Song("assets/tsunami.mp3", 0.5, 0),
+		new Song("assets/wikileaks.mp3", 0.5, 0.5),
+		new Song("assets/wikipedia.mp3", 0.5, 0.5),
+		new Song("assets/wizard.mp3", 0, 0.5),
 		new Song("assets/zelda.mp3", 0, 0.5)
 	]
 
