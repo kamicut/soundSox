@@ -12,12 +12,8 @@ var request = require("request");
 var MjpegConsumer = require("mjpeg-consumer");
 var consumer = new MjpegConsumer();
 
-var queue = [] 
-var max = 40
-var count = 0
-
 function update(data) {
-	console.log(data)
+	model.improveModel(data)
 }
  
 request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', function(data) {
@@ -75,8 +71,29 @@ function Model() {
 	this._currentMood = {s: 0.5, h: 0.5, count: 0}
 	this._currentSongPlaying = -1
 	this._songList = [
-		new Song("assets/button2.mp3", 0.5, 0.5), 
-		new Song("assets/button4.mp3", 1, 0.5)
+		new Song("assets/art_attack.mp3", 0, 0.5)
+		new Song("assets/bhutto.mp3", 0.5, 0)
+		new Song("assets/bill.mp3", 0.5, 0.5)
+		new Song("assets/bush.mp3", 0.5, 0)
+		new Song("assets/can.mp3", 0.5, 0.5)
+		new Song("assets/crunch.mp3", 0.5, 0)
+		new Song("assets/dialup.mp3", 0, 0.5)
+		new Song("assets/facebook.mp3", 0.5, 0.5)
+		new Song("assets/friends.mp3", 0, 0.5)
+		new Song("assets/global_warming.mp3", 0.5, 0)
+		new Song("assets/h1n1.mp3", 0.5, 0)
+		new Song("assets/higgs.mp3", 0, 0.5)
+		new Song("assets/ipod.mp3", 0, 0.5)
+		new Song("assets/mario.mp3", 0, 0.5)
+		new Song("assets/michael.mp3", 0, 0.5)
+		new Song("assets/pinky.mp3", 0, 0.5)
+		new Song("assets/pope.mp3", 0.5, 0)
+		new Song("assets/rickroll.mp3", 0.5, 0.5)
+		new Song("assets/tsunami.mp3", 0.5, 0)
+		new Song("assets/wikileaks.mp3", 0.5, 0.5)
+		new Song("assets/wikipedia.mp3", 0.5, 0.5)
+		new Song("assets/wizard.mp3", 0, 0.5)
+		new Song("assets/zelda.mp3", 0, 0.5)
 	]
 
 	this._alpha = 1;
@@ -107,6 +124,9 @@ function Model() {
 		var vol = this._alpha * Math.max(nextSong.s, nextSong.h);
 		var noise = this._beta * Math.abs(nextSong.s - nextSong.h); //I don't think this is accurate
 		var message = {name: name, params: "reverse", noise: vol, vol: noise}
+		this._currentSongPlaying = idx;
+		this._currentMood.s = 0;
+		this._currentMood.h = 0;
 		return message
 	}
 
@@ -117,19 +137,29 @@ function Model() {
 	this.improveModel = function(vector) {
 		//Algorithm to inject vector into the model
 		console.log(vector)
-		this._updateCurrentMood(vector)
-		this._updateCurrentSong(vector)
+		var n = vector[3];
+		var s = vector[0];
+		var h = vector[2];
+		this._updateCurrentMood(s,h,n)
+		this._updateCurrentSong(s,h,n)
 	}
 
 	/* Update the current mood
 	 *
 	 */
-	this._updateCurrentMood = function(vector) {
-
+	this._updateCurrentMood = function(s,h,n) {
+		if (n < 0.6) {
+			//Update mood only if outlier
+			this._currentMood.s = (this._currentMood.s + s)/2
+			this._currentMood.h = (this._currentMood.h + h)/2
+		}
 	}
 
-	this._updateCurrentSong = function(vector) {
-
+	this._updateCurrentSong = function(s,h,n) {
+		this._songList[this._currentSongPlaying].s = (
+			this._songList[this._currentSongPlaying] + s)/2
+		this._songList[this._currentSongPlaying].h = (
+			this._songList[this._currentSongPlaying] + h)/2
 	}
 }
 
