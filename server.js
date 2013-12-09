@@ -14,23 +14,19 @@ var consumer = new MjpegConsumer();
 var io = require('socket.io').listen(3000);
 
 
-function update(data) {
+function update(data, buf) {
 	model.improveModel(data)
+	if (data[3] < 0.65) io.sockets.emit('frame', {frame: buf})
 }
  
 request("http://192.168.2.2:8080/?action=stream").pipe(consumer).on('data', function(data) {
-	// if (count < MAX) { 
-	// 	count+= 1;
-	// 	doWork(data)
-	// } else {
-	// 	queue.push(data)
-	// }
 
 	fs.writeFile('./data/cropped.png', data, function() {
 		exec('./ofApp.app/Contents/MacOS/ofApp cropped.png', function(error, stdout, stderr) {
 			try {
 				var vals = JSON.parse(stdout)
-				update(vals)
+				var buf = data.toString('base64')
+				update(vals, buf)
 			} catch (err) {}
 
 		    if (error !== null) {
